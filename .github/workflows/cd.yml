@@ -19,10 +19,11 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - uses: google-github-actions/setup-gcloud@master
+      - name: Set up Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v1
         with:
-          service_account: ${{ secrets.GOOGLECLOUD_SERVICE_ACCOUNT }}
-          credentials_json: ${{ secrets.GOOGLECLOUD_CREDENTIALS }}
+          service_account_key: ${{ secrets.GOOGLECLOUD_CREDENTIALS }}
+          export_default_credentials: true
 
       - name: Build and push backend image
         uses: docker/build-push-action@v4
@@ -47,6 +48,7 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/reviews-frontend-1:latest
+          build-args: VITE_BACKEND_URL=${{ steps.deploy-backend.outputs.url }}/api/v1
       
       - id: deploy-frontend
         name: Deploy frontend
