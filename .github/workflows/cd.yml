@@ -9,7 +9,6 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     environment: production
-    url: ${{ steps.deploy-frontend.outputs.url }}
 
     steps:
       - uses: actions/checkout@v3
@@ -48,12 +47,11 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/reviews-frontend-1:latest
-          build-args: VITE_BACKEND_URL=${{ steps.deploy-backend.outputs.url }}/api/v1
       
       - id: deploy-frontend
         name: Deploy frontend
         uses: google-github-actions/deploy-cloudrun@v1
         with:
-          service: blog-frontend
+          service: reviews-frontend
           image: ${{ secrets.DOCKERHUB_USERNAME }}/reviews-frontend-1:latest
           region: ${{ secrets.GOOGLECLOUD_REGION }}
