@@ -18,5 +18,14 @@ export function PostList({ posts = [] }) {
 
 // Define prop types for type-checking
 PostList.propTypes = {
-  posts: PropTypes.arrayOf(PropTypes.shape(Post.propTypes)).isRequired,
-}
+  posts: PropTypes.arrayOf(
+    PropTypes.shape({
+      _id: PropTypes.string.isRequired,
+      title: PropTypes.string.isRequired,
+      contents: PropTypes.string,
+      author: PropTypes.shape({
+        username: PropTypes.string.isRequired, // Update author to be an object
+      }),
+    })
+  ).isRequired,
+};

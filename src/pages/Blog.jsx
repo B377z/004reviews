@@ -1,11 +1,12 @@
 
 import { useQuery } from '@tanstack/react-query';
-import { PostList } from './components/PostList.jsx';
-import { CreatePost } from './components/CreatePost.jsx';
-import { PostFilter } from './components/PostFilter.jsx';
-import { PostSorting } from './components/PostSorting.jsx';
-import { getPosts } from './api/posts.js';
+import { PostList } from '../components/PostList.jsx';
+import { CreatePost } from '../components/CreatePost.jsx';
+import { PostFilter } from '../components/PostFilter.jsx';
+import { PostSorting } from '../components/PostSorting.jsx';
+import { getPosts } from '../api/posts.js';
 import { useState } from 'react';
+import { Header } from '../components/Header.jsx'
 
 function Blog() {
   // Moved the useState calls inside the Blog component
@@ -22,6 +23,10 @@ function Blog() {
 
   return (
     <div style={{ padding: 8 }}>
+      <Header />
+      <br />
+      <hr />
+      <br />
       <CreatePost />
       <br />
       <hr />

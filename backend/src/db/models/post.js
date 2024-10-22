@@ -3,7 +3,7 @@ import Mongoose, { Schema } from 'mongoose' // Import Mongoose from the mongoose
 const postSchema = new Schema(
   {
     title: { type: String, required: true },
-    author: String,
+    author: { type: Schema.Types.ObjectId, ref: 'User' },
     contents: String,
     tags: [String],
   },

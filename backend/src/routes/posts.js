@@ -8,6 +8,7 @@ import {
   updatePost,
   deletePost,
 } from '../services/posts.js'
+import { requireAuth } from '../middleware/jwt.js'
 
 export function postsRoutes(app) {
   // Define the routes here
@@ -47,9 +48,9 @@ export function postsRoutes(app) {
     }
   })
 
-  app.post('/api/v1/posts', async (req, res) => {
+  app.post('/api/v1/posts', requireAuth, async (req, res) => {
     try {
-      const post = await createPost(req.body)
+      const post = await createPost(req.auth.sub, req.body)
       return res.json(post)
     } catch (error) {
       console.error('Error while creating post', error)
@@ -57,9 +58,9 @@ export function postsRoutes(app) {
     }
   })
 
-  app.patch('/api/v1/posts/:id', async (req, res) => {
+  app.patch('/api/v1/posts/:id', requireAuth, async (req, res) => {
     try {
-      const post = await updatePost(req.params.id, req.body)
+      const post = await updatePost(req.auth.sub, req.params.id, req.body)
       if (!post) {
         return res.status(404).json({ error: 'Post not found' })
       }
@@ -71,9 +72,9 @@ export function postsRoutes(app) {
   })
 
   // DELETE route to delete a post by ID
-  app.delete('/api/v1/posts/:id', async (req, res) => {
+  app.delete('/api/v1/posts/:id', requireAuth, async (req, res) => {
     try {
-      const result = await deletePost(req.params.id)
+      const result = await deletePost(req.auth.sub, req.params.id)
       if (!result || result.deletedCount === 0) {
         return res.status(404).json({ error: 'Post not found' })
       }

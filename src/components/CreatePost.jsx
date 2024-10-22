@@ -1,19 +1,27 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createPost } from "../api/posts.js";
 import { useState } from "react";
+import { useAuth } from "../contexts/AuthContext.jsx";
 
 export function CreatePost() {
-  // Move useState inside the CreatePost function
   const [title, setTitle] = useState('');
-  const [author, setAuthor] = useState('');
   const [contents, setContents] = useState('');
 
   const queryClient = useQueryClient();
+  const [token] = useAuth(); // Get the token from the AuthContext
 
   // Move useMutation inside the CreatePost function
   const createPostMutation = useMutation({
-    mutationFn: () => createPost({ title, author, contents }),
-    onSuccess: () => queryClient.invalidateQueries(['posts']),
+    mutationFn: () => createPost(token, { title, contents }), // Pass token here
+    onSuccess: () => {
+      queryClient.invalidateQueries(['posts']); // Refresh the posts list
+      setTitle('');
+      setContents('');
+    },
+    onError: (error) => {
+      console.error('Failed to create post:', error);
+      alert('Failed to create post!');
+    },
   });
 
   const handleSubmit = (e) => {
@@ -31,17 +39,7 @@ export function CreatePost() {
           id="create-title"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-        />
-      </div>
-      <br />
-      <div>
-        <label htmlFor="create-author">Author: </label>
-        <input
-          type="text"
-          name="create-author"
-          id="create-author"
-          value={author}
-          onChange={(e) => setAuthor(e.target.value)}
+          required
         />
       </div>
       <br />
@@ -52,6 +50,7 @@ export function CreatePost() {
           id="create-contents"
           value={contents}
           onChange={(e) => setContents(e.target.value)}
+          required
         />
       </div>
       <br />
